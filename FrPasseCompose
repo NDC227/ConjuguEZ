@@ -1,0 +1,256 @@
+extends Node
+
+
+# Declare member variables here.
+var avoir = ["ai", "as", "a", "avons", "avez", "ont"]
+var etre = ["suis", "es", "est", "sommes", "êtes", "sont"]
+var irr = ["être", "etre", "avoir"]
+var irrstem = ["été", "été", "eu"]
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Input.text = Global.text
+	$Input.emit_signal("text_changed")
+	$SpecialLabel.hide()
+	$SpecialArrow.hide()
+	var regex = RegEx.new()
+	regex.compile("(.*)(gesir|gésir|descendre|entrer|monter|retourner|sortir|passer|demeurer)$")
+	var needNotes = regex.search(Global.text)
+	if needNotes:
+		$SpecialLabel.show()
+		$SpecialArrow.show()
+
+
+func _on_GoBack_pressed():
+	get_tree().change_scene("res://TenseSelect.tscn")
+	
+func _on_Home_pressed():
+	get_tree().change_scene("res://MainMenu.tscn")
+
+func _on_Notes_pressed():
+	$NotesCamera.make_current()
+	
+func _on_NotesBack_pressed():
+	$MainCamera.make_current()
+
+func _on_Input_text_changed():
+	var regex = RegEx.new()
+	var input = $Input.text.to_lower()
+	var help = avoir
+	var participle = input.substr(0, input.length()-2)
+	Global.text = input
+	
+	if input in irr:
+		participle = irrstem[irr.find(input)]
+	
+	elif input.ends_with("er"):
+		participle = participle + "é"
+		
+	elif input.ends_with("ir"):
+		regex.compile("(.*)(devoir)$") #du circum
+		var devoir = regex.search(input)
+		regex.compile("(.*)(savoir)$") #su
+		var savoir = regex.search(input)
+		regex.compile("(.*)(pouvoir)$") #pu
+		var pouvoir = regex.search(input)
+		regex.compile("(.*)(val|ch|voul|fall)(oir)$") #valu
+		var valoir = regex.search(input)
+		regex.compile("(.*)(pleuvoir)$") #plu
+		var pleuvoir = regex.search(input)
+		regex.compile("(.*)(hair|haïr)$") #hai ummlat
+		var hair = regex.search(input)
+		regex.compile("(.*)(en|cour|vetir|vêtir)(ir)$") #ends in u
+		var enir = regex.search(input)
+		regex.compile("(.*)(querir|quérir)$") #quis
+		var querir = regex.search(input)
+		regex.compile("(.*)(cevoir)$") #recu cedilla
+		var cevoir = regex.search(input)
+		regex.compile("(.*)(mourir)$") #mort
+		var mourir = regex.search(input)
+		regex.compile("(.*)(mouvoir)$") #mu circum
+		var mouvoir = regex.search(input)
+		regex.compile("(.*)(ass)(e?)(oir)$") #asiss
+		var asseoir = regex.search(input)
+		regex.compile("(.*)(v|f)(rir)$") #ouvert
+		var vrir = regex.search(input)
+		
+		if devoir:
+			participle = devoir.get_string(1) + "dû"
+			
+		elif savoir:
+			participle = savoir.get_string(1) + "su"
+			
+		elif pouvoir:
+			participle = pouvoir.get_string(1) + "pu"
+			
+		elif valoir:
+			participle = participle.substr(0, participle.length()-1) + "u"
+			
+		elif pleuvoir:
+			participle = pleuvoir.get_string(1) + "plu"
+			
+		elif hair:
+			participle = hair.get_string(1) + "haï"
+			
+		elif enir:
+			participle = participle + "u"
+			
+		elif querir:
+			participle = participle.substr(0, participle.length()-2) + "is"
+			
+		elif cevoir:
+			participle = cevoir.get_string(1) + "çu"
+			
+		elif mourir:
+			participle = mourir.get_string(1) + "mort"
+			
+		elif mouvoir:
+			participle = mouvoir.get_string(1) + "mû"
+			
+		elif asseoir:
+			participle = asseoir.get_string(1) + "assis"
+			
+		elif vrir:
+			participle = vrir.get_string(1) + vrir.get_string(2) + "ert"
+			
+		else:
+			participle = participle + "i"
+		
+	elif input.ends_with("re"):
+		regex.compile("(.*)(prendre|mettre)$") #pris/mis
+		var prendre = regex.search(input)
+		regex.compile("(.*)(naitre|naître)$") #pris/mis
+		var naitre = regex.search(input)
+		regex.compile("(.*)(u|d|f|fr|fa|maud|cr)(ire)$") #conduit
+		var uire = regex.search(input)
+		regex.compile("(.*)(lire)$") #lu
+		var lire = regex.search(input)
+		regex.compile("(.*)([aeo])(indre)$") #joint
+		var indre = regex.search(input)
+		regex.compile("(.*)(itre|ître)$") #connu (pu)
+		var itre = regex.search(input)
+		regex.compile("(.*)(croire|raire|plaire|taire|boire)$") #cru
+		var croire = regex.search(input)
+		regex.compile("(.*)(clure|clore|concire)$")#clus/clus
+		var clure = regex.search(input)
+		regex.compile("(.*)(rire)$") #ri
+		var rire = regex.search(input)
+		regex.compile("(.*)(coudre)$") #cousu
+		var coudre = regex.search(input)
+		regex.compile("(.*)(moudre)$") #moulu
+		var moudre = regex.search(input)
+		regex.compile("(.*)(vivre)$") #ve(aigu)cu
+		var vivre = regex.search(input)
+		regex.compile("(.*)(suivre)$") #suivi
+		var suivre = regex.search(input)
+		regex.compile("(.*)(resoudre|résoudre)$") #re(aigu)solu
+		var resoudre = regex.search(input)
+		regex.compile("(.*)(soudre)$") #absous
+		var soudre = regex.search(input)
+		
+		if prendre:
+			participle = participle.substr(0, participle.length()-3) + "is"
+			
+		elif naitre:
+			participle = participle.substr(0, participle.length()-3) + "é"
+			
+		elif uire:
+			participle = participle + "t"
+			
+		elif lire:
+			participle = lire.get_string(1) + "lu"
+			
+		elif indre:
+			participle = participle.substr(0, participle.length()-1) + "t"
+			
+		elif itre:
+			participle = participle.substr(0, participle.length()-3) + "u"
+			
+		elif croire:
+			participle = participle.substr(0, participle.length()-2) + "u"
+			
+		elif clure:
+			participle = participle + "s"
+			
+		elif rire:
+			pass
+			
+		elif coudre:
+			participle = participle.substr(0, participle.length()-1) + "su"
+			
+		elif moudre:
+			participle = participle.substr(0, participle.length()-1) + "lu"
+			
+		elif vivre:
+			participle = vivre.get_string(1) + "vécu"
+			
+		elif suivre:
+			participle = participle + "i"
+			
+		elif resoudre:
+			participle = participle.substr(0, participle.length()-2) + "lu"
+			
+		elif soudre:
+			participle = participle.substr(0, participle.length()-1) + "s"
+			
+		else:
+			participle = participle + "u"
+		
+	regex.compile("(se |s')(.*)")
+	var refl = regex.search(input)
+	if refl and input.begins_with("se"):
+		participle = participle.substr(3, participle.length())
+	elif refl and input.begins_with("s'"):
+		participle = participle.substr(2, participle.length())
+		
+	regex.compile("(.*)(aller|arriver|descendre|entrer|monter|mourir|naitre|partir|passer|rester|retourner|sortir|tomber|venir)$")
+	var specialHelp = regex.search(input)
+	if specialHelp:
+		help = etre
+		
+	if input.ends_with("er") or input.ends_with("ir") or input.ends_with("re"):
+		if refl:
+			reflConjugate(participle)
+		else:
+			conjugate(help, participle)
+	else:
+		resetEndings()
+
+	if input.length() < 4:
+		resetEndings()
+		
+	regex.compile("(.*)(gesir|gésir|descendre|entrer|monter|retourner|sortir|passer|demeurer)$")
+	var needNotes = regex.search(input)
+	if needNotes:
+		$SpecialLabel.show()
+		$SpecialArrow.show()
+		
+func conjugate(help, participle):
+	$JeConj.text = help[0] + " " + participle
+	$TuConj.text = help[1] + " "  + participle
+	$IlConj.text = help[2] + " "  + participle
+	$NousConj.text = help[3] + " "  + participle
+	$VousConj.text = help[4] + " "  + participle
+	$IlsConj.text = help[5] + " "  + participle
+	if help == etre:
+		$NousConj.text = $NousConj.text + "s"
+		$VousConj.text = $VousConj.text + "s"
+		$IlsConj.text = $IlsConj.text + "s"
+	
+func reflConjugate(participle):
+	$JeConj.text = "me " + etre[0] + " " + participle
+	$TuConj.text = "t'" + etre[1] + " "  + participle
+	$IlConj.text = "s'" + etre[2] + " "  + participle
+	$NousConj.text = "nous " + etre[3] + " "  + participle + "s"
+	$VousConj.text = "vous " + etre[4] + " "  + participle + "s"
+	$IlsConj.text = "se " + etre[5] + " "  + participle + "s"
+		
+func resetEndings():
+	$JeConj.text = "-"
+	$TuConj.text = "-"
+	$IlConj.text = "-"
+	$NousConj.text = "-"
+	$VousConj.text = "-"
+	$IlsConj.text = "-"
+	$SpecialLabel.hide()
+	$SpecialArrow.hide()

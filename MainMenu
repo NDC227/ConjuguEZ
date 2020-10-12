@@ -1,0 +1,18 @@
+extends Node
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Current.text = Global.text
+	if Global.text != "":
+		$InputLabel.show()
+		$Current.show()
+	else:
+		$InputLabel.hide()
+		$Current.hide()
+
+func _on_Start_pressed():
+	get_tree().change_scene("res://TenseSelect.tscn")
+
+
+func _on_Current_text_changed():
+	Global.text = $Current.text

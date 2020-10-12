@@ -1,0 +1,49 @@
+extends Node
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Current.text = Global.text
+	if Global.text != "":
+		$InputLabel.show()
+		$Current.show()
+	else:
+		$InputLabel.hide()
+		$Current.hide()
+
+
+func _on_Back_pressed():
+	get_tree().change_scene("res://MainMenu.tscn")
+
+func _on_PresentImperatif_pressed():
+	get_tree().change_scene("res://FrPresent.tscn")
+
+func _on_PasseCompose_pressed():
+	get_tree().change_scene("res://FrPasseCompose.tscn")
+	
+func _on_Imparfait_pressed():
+	get_tree().change_scene("res://FrImperfect.tscn")
+
+func _on_PlusQueParfait_pressed():
+	get_tree().change_scene("res://FrPluperfect.tscn")
+
+func _on_Conditionnel_pressed():
+	get_tree().change_scene("res://FrConditional.tscn")
+
+func _on_ConditionnelPasse_pressed():
+	get_tree().change_scene("res://FrConditionalPasse.tscn")
+
+func _on_Futur_pressed():
+	get_tree().change_scene("res://FrFuture.tscn")
+
+func _on_FuturAnterieure_pressed():
+	get_tree().change_scene("res://FrFuturAnterieure.tscn")
+
+func _on_Subjonctif_pressed():
+	get_tree().change_scene("res://FrSubjunctive.tscn")
+
+func _on_Subjonctif_Passe_pressed():
+	get_tree().change_scene("res://SubjunctivePasse.tscn")
+
+func _on_Current_text_changed():
+	Global.text = $Current.text

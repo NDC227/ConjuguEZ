@@ -1,0 +1,233 @@
+extends Node
+
+# Declare member variables here.
+
+var irr = ["être", "etre"]
+var irrstem = ["ét", "ét"]
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Input.text = Global.text
+	$Input.emit_signal("text_changed")
+	$SpecialLabel.hide()
+	var regex = RegEx.new()
+	regex.compile("(.*)(choir|asseoir|saillir)$")
+	var needNotes = regex.search(Global.text)
+	if needNotes:
+		$SpecialLabel.show()
+
+
+func _on_GoBack_pressed():
+	get_tree().change_scene("res://TenseSelect.tscn")
+	
+func _on_Home_pressed():
+	get_tree().change_scene("res://MainMenu.tscn")
+
+func _on_Notes_pressed():
+	$NotesCamera.make_current()
+	
+func _on_NotesBack_pressed():
+	$MainCamera.make_current()
+
+func _on_Input_text_changed():
+	var regex = RegEx.new()
+	var input = $Input.text.to_lower()
+	Global.text = input
+	var stem = input.substr(0, input.length()-2)
+	var singStem = stem
+	var nousStem = stem
+	var vousStem = stem
+	var ilsStem = stem
+	
+	if input.length() < 4:
+		resetEndings()
+		
+	elif input in irr:
+		stem = irrstem[irr.find(input)]
+		impEndings(stem)
+		
+	elif input.ends_with("er"):
+		regex.compile("(.*)(cer)$")
+		var cer = regex.search(input)
+		regex.compile("(.*)(ger)$")
+		var ger = regex.search(input)
+		if cer:
+			singStem = singStem.substr(0, singStem.length()-1) + "ç"
+			ilsStem = singStem
+			specEndings(singStem, nousStem, vousStem, ilsStem)
+	
+		elif ger:
+			singStem = singStem + "e"
+			ilsStem = singStem
+			specEndings(singStem, nousStem, vousStem, ilsStem)
+		
+		else:
+			impEndings(stem)
+		reflexive(input, regex)
+	
+	elif input.ends_with("ir"):
+		regex.compile("(.*)(gesir|gésir)$")
+		var gesir = regex.search(input)
+		regex.compile("(.*)(hair|haïr)$")
+		var hair = regex.search(input)
+		regex.compile("(.*)(choir)$")
+		var choir = regex.search(input)
+		regex.compile("(.*)(dorm|ment|part|sent|serv|sort|en|cour|vet|vêt|quer|quér|mour|ll|vr|fr)(ir)$")
+		var irr = regex.search(input)
+		regex.compile("^(.*re)?(voir|fuir)$")
+		var voir = regex.search(input)
+		regex.compile("(.*)(ass)(e?)(oir)$")
+		var asseoir = regex.search(input)
+		regex.compile("(.*)(oir)$")
+		var oir = regex.search(input)
+
+		if irr:
+			pass
+			
+		elif gesir:
+			stem = gesir.get_string(1) + "gis"
+			
+		elif hair:
+			stem = stem + "ïss"
+			
+		elif choir:
+			pass
+			
+		elif voir:
+			stem = stem + "y"
+		
+		elif asseoir:
+			stem = stem.substr(0, stem.length()-1) + "y"
+			
+		elif oir:
+			stem = stem.substr(0, stem.length()-1)
+			
+		else:
+			stem = stem + "iss"
+			
+		impEndings(stem)
+		reflexive(input, regex)
+		
+	elif input.ends_with("re"):
+		regex.compile("(.*)(fa|u|d|f|l|pla|ta|fr|conc)(ire)$") #add an s
+		var ire = regex.search(input)
+		regex.compile("(.*)(prendre)$") #minus d
+		var prendre = regex.search(input)
+		regex.compile("(.*)(paitre|paître)$")
+		var paitre = regex.search(input)
+		regex.compile("(.*)(maudire)$")
+		var maudire = regex.search(input)
+		regex.compile("(.*)(crire)$") #add v
+		var crire = regex.search(input)
+		regex.compile("(.*)([aeo])(indre)$") #no d, add g
+		var indre = regex.search(input)
+		regex.compile("(.*)(itre|ître)$") #no t, accent, add ss
+		var itre = regex.search(input)
+		regex.compile("(.*)(boire)$") #buv
+		var boire = regex.search(input)
+		regex.compile("(.*)(croire|raire)$") #i to y
+		var croire = regex.search(input)
+		regex.compile("(.*)(coudre)$") #d to s
+		var coudre = regex.search(input)
+		regex.compile("(.*)(moudre)$") #d to l
+		var moudre = regex.search(input)
+		regex.compile("(.*)(clore)$") #add s but special
+		var clore = regex.search(input)
+		regex.compile("(.*)(soudre)$") #solv
+		var soudre = regex.search(input)
+			
+		if prendre:
+			stem = stem.substr(0, stem.length()-1)
+			
+		elif paitre:
+			stem = stem.substr(0, stem.length()-2) + "iss"
+			
+		elif maudire:
+			stem = stem + "ss"
+			
+		elif crire:
+			stem = stem + "v"
+			
+		elif indre:
+			stem = stem.substr(0, stem.length()-2) + "gn"
+			
+		elif itre:
+			stem = stem.substr(0, stem.length()-2) + "iss"
+			
+		elif boire:
+			stem = stem.substr(0, stem.length()-2) + "uv"
+			
+		elif croire:
+			stem = stem.substr(0, stem.length()-1) + "y"
+			
+		elif coudre:
+			stem = stem.substr(0, stem.length()-1) + "s"
+			
+		elif moudre:
+			stem = stem.substr(0, stem.length()-1) + "l"
+			
+		elif clore:
+			stem = stem + "s"
+			
+		elif soudre:
+			stem = stem.substr(0, stem.length()-2) + "lv"
+			
+		elif ire:
+			stem = stem + "s"
+			
+		impEndings(stem)
+		reflexive(input, regex)
+		
+	else:
+		resetEndings()
+		
+	regex.compile("(.*)(choir|asseoir|saillir)$")
+	var needNotes = regex.search(input)
+	if needNotes:
+		$SpecialLabel.show()
+
+func reflexive(input, regex):
+	regex.compile("(se )(.*)")
+	var refl1 = regex.search(input)
+	if refl1:
+		$JeConj.text = "me" + $JeConj.text.substr(2, $JeConj.text.length())
+		$TuConj.text = "te" + $TuConj.text.substr(2, $TuConj.text.length())
+		$IlConj.text = "se" + $IlConj.text.substr(2, $IlConj.text.length())
+		$NousConj.text = "nous" + $NousConj.text.substr(2, $NousConj.text.length())
+		$VousConj.text = "vous" + $VousConj.text.substr(2, $VousConj.text.length())
+		$IlsConj.text = "se" + $IlsConj.text.substr(2, $IlsConj.text.length())
+	
+	regex.compile("(s')(.*)")
+	var refl2 = regex.search(input)
+	if refl2:
+		$JeConj.text = "m'" + $JeConj.text.substr(2, $JeConj.text.length())
+		$TuConj.text = "t'" + $TuConj.text.substr(2, $TuConj.text.length())
+		$IlConj.text = "s'" + $IlConj.text.substr(2, $IlConj.text.length())
+		$NousConj.text = "nous " + $NousConj.text.substr(2, $NousConj.text.length())
+		$VousConj.text = "vous " + $VousConj.text.substr(2, $VousConj.text.length())
+		$IlsConj.text = "s'" + $IlsConj.text.substr(2, $IlsConj.text.length())
+
+func impEndings(stem):
+	$JeConj.text = stem + "ais"
+	$TuConj.text = stem + "ais"
+	$IlConj.text = stem + "ait"
+	$NousConj.text = stem + "ions"
+	$VousConj.text = stem + "iez"
+	$IlsConj.text = stem + "aient"
+	
+func specEndings(singStem, nousStem, vousStem, ilsStem):
+	$JeConj.text = singStem + "ais"
+	$TuConj.text = singStem + "ais"
+	$IlConj.text = singStem + "ait"
+	$NousConj.text = nousStem + "ions"
+	$VousConj.text = vousStem + "iez"
+	$IlsConj.text = ilsStem + "aient"
+	
+func resetEndings():
+	$JeConj.text = "-"
+	$TuConj.text = "-"
+	$IlConj.text = "-"
+	$NousConj.text = "-"
+	$VousConj.text = "-"
+	$IlsConj.text = "-"
+	$SpecialLabel.hide()

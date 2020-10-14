@@ -125,91 +125,77 @@ func _on_Input_text_changed():
 		if devoir:
 			singStem = devoir.get_string(1) + "doiv"
 			nousStem = devoir.get_string(1) + "dev"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif pouvoir:
 			singStem = pouvoir.get_string(1) + "puiss"
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif vouloir:
 			singStem = vouloir.get_string(1) + "veuill"
 			nousStem = vouloir.get_string(1) + "voul"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif savoir:
 			singStem = savoir.get_string(1) + "sach"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif falloir:
 			singStem = falloir.get_string(1) + "faill"
 			nousStem = falloir.get_string(1) + "fal"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif valoir:
 			singStem = valoir.get_string(1) + "vaill"
 			nousStem = valoir.get_string(1) + "val"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif pleuvoir:
 			singStem = pleuvoir.get_string(1) + "pleuv"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif hair:
 			singStem = hair.get_string(1) + "haïss"
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif dormir:
-			pass
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif enir:
 			singStem = enir.get_string(1) + "ienn"
-			ilsStem = singStem
+			endings(singStem, nousStem, vousStem, singStem)
 			
 		elif querir:
 			singStem = querir.get_string(1) + "quièr"
-			ilsStem = singStem
+			endings(singStem, nousStem, vousStem, singStem)
 			
 		elif cevoir:
 			singStem = cevoir.get_string(1) + "çoiv"
 			nousStem = cevoir.get_string(1) + "cev"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif mourir:
 			singStem = mourir.get_string(1) + "meur"
-			ilsStem = singStem
+			endings(singStem, nousStem, vousStem, singStem)
 			
 		elif mouvoir:
 			singStem = mouvoir.get_string(1) + "meuv"
 			nousStem = nousStem.substr(0, nousStem.length()-1)
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif voir:
 			singStem = singStem + "i"
 			nousStem = nousStem + "y"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif asseoir:
 			singStem = asseoir.get_string(1) + "assey"
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		else:
 			singStem = singStem + "iss"
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 		
-		endings(singStem, nousStem, vousStem, ilsStem)
 		reflexive(input, regex)
 		
 	elif input.ends_with("re"):
@@ -248,98 +234,62 @@ func _on_Input_text_changed():
 		
 		if faire:
 			singStem = faire.get_string(1) + "fass"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif prendre:
 			singStem = prendre.get_string(1) + "prenn"
 			nousStem = prendre.get_string(1) + "pren"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif paitre:
 			singStem = paitre.get_string(1) + "paiss"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif maudire:
 			singStem = maudire.get_string(1) + "maudiss"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif ncre:
 			singStem = ncre.get_string(1) + "nqu"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif croire:
 			nousStem = nousStem.substr(0, nousStem.length()-1) + "y"
-			vousStem = nousStem
+			endings(singStem, nousStem, nousStem, ilsStem)
 			
 		elif uire or clore or plaire:
 			singStem = singStem + "s"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif crire:
 			singStem = singStem + "v"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif indre:
 			singStem = indre.get_string(1) + indre.get_string(2) + "ign"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif itre:
 			singStem = itre.get_string(1) + "iss"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif boire:
 			singStem = boire.get_string(1) + "boiv"
 			nousStem = boire.get_string(1) + "buv"
-			vousStem = nousStem
-			ilsStem = singStem
+			endings(singStem, nousStem, nousStem, singStem)
 			
 		elif coudre:
 			singStem = coudre.get_string(1) + "cous"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif moudre:
 			singStem = moudre.get_string(1) + "moul"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
 			
 		elif soudre:
 			singStem = soudre.get_string(1) + "solv"
-			nousStem = singStem
-			vousStem = singStem
-			ilsStem = singStem
-			irrStem(singStem, nousStem, vousStem, ilsStem)
-			
-		endings(singStem, nousStem, vousStem, ilsStem)
+			endings(singStem, singStem, singStem, singStem)
+		
 		reflexive(input, regex)
 		
 	else:
@@ -379,11 +329,6 @@ func endings(singStem, nousStem, vousStem, ilsStem):
 	$VousConj.text = vousStem + "iez"
 	$IlsConj.text = ilsStem + "ent"
 
-func irrStem(singStem, nousStem, vousStem, ilsStem):
-	nousStem = singStem
-	vousStem = singStem
-	ilsStem = singStem
-	
 func resetEndings():
 	$JeConj.text = "-"
 	$TuConj.text = "-"

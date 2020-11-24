@@ -65,7 +65,7 @@ func _on_Input_text_changed():
 			impEndings(stem)
 		reflexive(input, regex)
 	
-	elif input.ends_with("ir"):
+	elif input.ends_with("ir") or input.ends_with("ïr"):
 		regex.compile("(.*)(gesir|gésir)$")
 		var gesir = regex.search(input)
 		regex.compile("(.*)(hair|haïr)$")

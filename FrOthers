@@ -1,0 +1,583 @@
+extends Node
+
+
+# Declare member variables here.
+var irr = ["être", "etre", "avoir"]
+var irrpasse = ["été", "été", "eu"]
+var irrpresent = ["ét", "ét", "ay"]
+var irrtu = ["sois", "sois", "aie"]
+var irrnous = ["soyons", "soyons", "ayons"]
+var irrvous = ["soyez", "soyez", "ayez"]
+var help = "ayant"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Input.text = Global.text
+	$Input.emit_signal("text_changed")
+	$SpecialLabel.hide()
+	var regex = RegEx.new()
+	regex.compile("(.*)(choir|asseoir|saillir)$")
+	var needNotes = regex.search(Global.text)
+	if needNotes:
+		$SpecialLabel.show()
+
+func _on_GoBack_pressed():
+	get_tree().change_scene("res://TenseSelect.tscn")
+	
+func _on_Home_pressed():
+	get_tree().change_scene("res://MainMenu.tscn")
+
+func _on_Notes_pressed():
+	$NotesCamera.make_current()
+	
+func _on_NotesBack_pressed():
+	$MainCamera.make_current()
+	
+func _on_Input_text_changed():
+	var regex = RegEx.new()
+	var input = $Input.text.to_lower()
+	var participle = input.substr(0, input.length()-2)
+	var stem = input.substr(0, input.length()-2)
+	var tuStem = stem
+	var nousStem = stem
+	var vousStem = stem
+	Global.text = input
+	
+	if input in irr:
+		participle = irrpasse[irr.find(input)]
+		stem = irrpresent[irr.find(input)]
+		$ImperatifTu.text = irrtu[irr.find(input)]
+		$ImperatifNous.text = irrnous[irr.find(input)]
+		$ImperatifVous.text = irrvous[irr.find(input)]
+	
+	elif input.ends_with("er"):	
+		tuStem = tuStem + "e"
+		
+		regex.compile("(.*)(aller)")
+		var result = regex.search(input)
+		if result:
+			tuStem = "va"
+		
+		regex.compile("(.*)([aou])(yer)$")
+		result = regex.search(input)
+		if result:
+			tuStem = input.substr(0, input.length()-3) + "ie"
+			
+		regex.compile("(.*)(e|é)([a-z])(er)$")
+		result = regex.search(input)
+		if result:
+			tuStem = input.substr(0, input.length()-4) + "è" + result.get_string(3) + "e"
+			
+		regex.compile("(.*)(e|é)([lt])(er)$")
+		result = regex.search(input)
+		regex.compile("^(acheter|begueter|bégueter|celer|ciseler|congeler|corseter|crocheter|deceler|déceler|decongeler|décongeler|degeler|dégeler|demanteler|démanteler|ecarteler|écarteler|encasteler|epinceler|épinceler|fileter|fureter|geler|haleter|harceler|marteler|modeler|peler|racheter|receler|regeler|surgeler)$")
+		var excep = regex.search(input)
+		if result and !excep:
+			tuStem = input.substr(0, input.length()-2) + result.get_string(3) + "e"
+			
+		regex.compile("(.*)(cer)$")       #only for nous!
+		result = regex.search(input)
+		if result:
+			stem = stem.substr(0, stem.length()-1) + "ç"
+			nousStem = stem
+	
+		regex.compile("(.*)(ger)$")       #only for nous!
+		result = regex.search(input)
+		if result:
+			stem = stem + "e"
+			nousStem = stem
+			
+		participle = participle + "é"
+		
+	elif input.ends_with("ir") or input.ends_with("ïr"):
+		regex.compile("(.*)(devoir)$") #du circum
+		var devoir = regex.search(input)
+		regex.compile("(.*)(savoir)$") #su
+		var savoir = regex.search(input)
+		regex.compile("(.*)(pouvoir)$") #pu
+		var pouvoir = regex.search(input)
+		regex.compile("(.*)(valoir)$") #valu
+		var valoir = regex.search(input)
+		regex.compile("(.*)(choir)$")
+		var choir = regex.search(input)
+		regex.compile("(.*)(vouloir)$")
+		var vouloir = regex.search(input)
+		regex.compile("(.*)(falloir)$")
+		var falloir = regex.search(input)
+		regex.compile("(.*)(pleuvoir)$") #plu
+		var pleuvoir = regex.search(input)
+		regex.compile("(.*)(hair|haïr)$") #hai ummlat
+		var hair = regex.search(input)
+		regex.compile("(.*)(gesir|gésir)$") #gisant
+		var gesir = regex.search(input)
+		regex.compile("(.*)(dorm|ment|part|sent|serv|sort)(ir)$")
+		var dormir = regex.search(input)
+		regex.compile("(.*)(bouillir)$")
+		var bouillir = regex.search(input)
+		regex.compile("(.*)(saillir)$")
+		var saillir = regex.search(input)
+		regex.compile("(.*)(enir)$") #ends in u
+		var enir = regex.search(input)
+		regex.compile("(.*)(cour|vet|vêt)(ir)$")
+		var courir = regex.search(input)
+		regex.compile("(.*)(querir|quérir)$") #quis
+		var querir = regex.search(input)
+		regex.compile("(.*)(cevoir)$") #recu cedilla
+		var cevoir = regex.search(input)
+		regex.compile("(.*)(mourir)$") #mort
+		var mourir = regex.search(input)
+		regex.compile("(.*)(mouvoir)$") #mu circum
+		var mouvoir = regex.search(input)
+		regex.compile("(.*)(voir)$")
+		var voir = regex.search(input)
+		regex.compile("(.*)(fuir)$")
+		var fuir = regex.search(input)
+		regex.compile("(.*)(ass)(e?)(oir)$") #asiss
+		var asseoir = regex.search(input)
+		regex.compile("(.*)(v|f)(rir)$") #ouvert
+		var vrir = regex.search(input)
+		
+		if devoir:
+			participle = devoir.get_string(1) + "dû"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = devoir.get_string(1) + "doi"
+			nousStem = devoir.get_string(1) + "dev"
+			vousStem = nousStem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif savoir:
+			participle = savoir.get_string(1) + "su"
+			stem = stem.substr(0, stem.length()-2) + "ch"
+			tuStem = stem + "e"
+			nousStem = stem
+			vousStem = stem
+			erimpconj(tuStem, nousStem, vousStem)
+			
+		elif pouvoir:
+			participle = pouvoir.get_string(1) + "pu"
+			stem = stem.substr(0, stem.length()-1)
+			
+		elif valoir:
+			participle = participle.substr(0, participle.length()-1) + "u"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = valoir.get_string(1) + "vaux"
+			nousStem = stem
+			vousStem = stem
+			erimpconj(tuStem, nousStem, vousStem)
+			
+		elif choir:
+			participle = participle.substr(0, participle.length()-1) + "u"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = tuStem + "i"
+			nousStem = nousStem + "y"
+			vousStem = nousStem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif vouloir:
+			participle = participle.substr(0, participle.length()-1) + "u"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = vouloir.get_string(1) + "veuille"
+			nousStem = vouloir.get_string(1) + "veuill"
+			vousStem = nousStem
+			erimpconj(tuStem, nousStem, vousStem)
+			
+		elif falloir:
+			participle = participle.substr(0, participle.length()-1) + "u"
+			stem = stem.substr(0, stem.length()-1)
+			
+		elif pleuvoir:
+			participle = pleuvoir.get_string(1) + "plu"
+			stem = stem.substr(0, stem.length()-1)
+			
+		elif hair:
+			participle = hair.get_string(1) + "haï"
+			stem = stem + "ïss"
+			tuStem = tuStem + "i"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif gesir:
+			participle = participle + "i"
+			stem = stem.substr(0, stem.length()-2) + "is"
+			tuStem = stem.substr(0, stem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif dormir:
+			participle = participle + "i"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif bouillir:
+			participle = participle + "i"
+			tuStem = tuStem.substr(0, tuStem.length()-3)
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif saillir:
+			participle = participle + "i"
+			tuStem = tuStem + "e"
+			erimpconj(tuStem, nousStem, vousStem)
+			
+		elif enir:
+			participle = participle + "u"
+			tuStem = enir.get_string(1) + "ien"
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif courir:
+			participle = participle + "u"
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif querir:
+			participle = participle.substr(0, participle.length()-2) + "is"
+			tuStem = querir.get_string(1) + "quier"
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif cevoir:
+			participle = cevoir.get_string(1) + "çu"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = cevoir.get_string(1) + "çoi"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif mourir:
+			participle = mourir.get_string(1) + "mort"
+			tuStem = mourir.get_string(1) + "meur"
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif mouvoir:
+			participle = mouvoir.get_string(1) + "mû"
+			stem = stem.substr(0, stem.length()-1)
+			tuStem = mouvoir.get_string(1) + "meu"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif voir:
+			participle = participle.substr(0, stem.length()-1) + "u"
+			stem = stem + "y"
+			tuStem = tuStem + "i"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif fuir:
+			participle = participle + "i"
+			stem = stem + "y"
+			tuStem = tuStem + "i"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif asseoir:
+			participle = asseoir.get_string(1) + "assis"
+			stem = stem.substr(0, stem.length()-1) + "y"
+			tuStem = asseoir.get_string(1) + "assied"
+			nousStem = stem
+			vousStem = stem
+			irimpconj(tuStem, nousStem, vousStem)
+			
+		elif vrir:
+			participle = vrir.get_string(1) + vrir.get_string(2) + "ert"
+			tuStem = stem + "e"
+			erimpconj(tuStem, nousStem, vousStem)
+			
+		else:
+			participle = participle + "i"
+			stem = stem + "iss"
+			tuStem = tuStem + "i"
+			nousStem = nousStem + "iss"
+			vousStem = nousStem
+			irimpconj(tuStem, nousStem, vousStem)
+		
+	elif input.ends_with("re"):
+		regex.compile("(.*)(fa|d)(ire)$")
+		var faire = regex.search(input)
+		regex.compile("(.*)(prendre)$") #pris
+		var prendre = regex.search(input)
+		regex.compile("(.*)(mettre)$") 
+		var mettre = regex.search(input)
+		regex.compile("(.*)(battre)$")
+		var battre = regex.search(input)
+		regex.compile("(.*)(naitre|naître)$")
+		var naitre = regex.search(input)
+		regex.compile("(.*)(maudire)$")
+		var maudire = regex.search(input)
+		regex.compile("(.*)(ncre)$")
+		var ncre = regex.search(input)
+		regex.compile("(.*)(u|f|fr)(ire)$") #conduit
+		var uire = regex.search(input)
+		regex.compile("(.*)(crire)$") 
+		var crire = regex.search(input)
+		regex.compile("(.*)(lire)$") #lu
+		var lire = regex.search(input)
+		regex.compile("(.*)([aeo])(indre)$") #joint
+		var indre = regex.search(input)
+		regex.compile("(.*)(itre|ître)$") #connu (pu)
+		var itre = regex.search(input)
+		regex.compile("(.*)(foutre)$") 
+		var foutre = regex.search(input)
+		regex.compile("(.*)(croire|raire)$") #cru
+		var croire = regex.search(input)
+		regex.compile("(.*)(plaire|taire)$")
+		var plaire = regex.search(input)
+		regex.compile("(.*)(boire)$")
+		var boire = regex.search(input)
+		regex.compile("(.*)(clure)$")#clus/clus
+		var clure = regex.search(input)
+		regex.compile("(.*)(clore|concire)$")#clus/clus
+		var clore = regex.search(input)
+		regex.compile("(.*)(rire)$") #ri
+		var rire = regex.search(input)
+		regex.compile("(.*)(coudre)$") #cousu
+		var coudre = regex.search(input)
+		regex.compile("(.*)(moudre)$") #moulu
+		var moudre = regex.search(input)
+		regex.compile("(.*)(vivre)$") #ve(aigu)cu
+		var vivre = regex.search(input)
+		regex.compile("(.*)(suivre)$") #suivi
+		var suivre = regex.search(input)
+		regex.compile("(.*)(resoudre|résoudre)$") #re(aigu)solu
+		var resoudre = regex.search(input)
+		regex.compile("(.*)(soudre)$") #absous
+		var soudre = regex.search(input)
+		
+		if faire:
+			participle = participle + "t"
+			stem = stem + "s"
+			nousStem = stem
+			vousStem = stem.substr(0, stem.length()-1) + "t"
+			$ImperatifTu.text = tuStem + "s"
+			$ImperatifNous.text = nousStem + "ons"
+			$ImperatifVous.text = vousStem + "es"
+		
+		elif prendre:
+			participle = participle.substr(0, participle.length()-3) + "is"
+			stem = stem.substr(0, stem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif mettre:
+			participle = participle.substr(0, participle.length()-3) + "is"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif battre:
+			participle = participle + "u"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif maudire: 
+			participle = participle + "t"
+			stem = stem + "ss"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif ncre:
+			participle = participle + "u"
+			stem = stem.substr(0, stem.length()-1) + "qu"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif uire:
+			participle = participle + "t"
+			stem = stem + "s"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif crire: 
+			participle = participle + "t"
+			stem = stem + "v"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif lire:
+			participle = lire.get_string(1) + "lu"
+			stem = stem + "s"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif indre:
+			participle = participle.substr(0, participle.length()-1) + "t"
+			stem = stem.substr(0, stem.length()-2) + "gn"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif itre and input != "naitre" and input != "naître":
+			participle = participle.substr(0, participle.length()-3) + "u"
+			stem = stem.substr(0, stem.length()-2) + "iss"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif foutre:
+			participle = participle + "u"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif naitre:
+			participle = participle.substr(0, participle.length()-3) + "é"
+			stem = stem.substr(0, stem.length()-2) + "iss"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif croire:
+			participle = participle.substr(0, participle.length()-2) + "u"
+			stem = stem.substr(0, stem.length()-1) + "y"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif plaire:
+			participle = participle.substr(0, participle.length()-2) + "u"
+			stem = stem + "s"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif boire:
+			participle = participle.substr(0, participle.length()-2) + "u"
+			stem = stem.substr(0, stem.length()-2) + "uv"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif clure:
+			participle = participle + "s"
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif clore:
+			participle = participle + "s"
+			stem = stem + "s"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif rire:
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif coudre:
+			participle = participle.substr(0, participle.length()-1) + "su"
+			stem = stem.substr(0, stem.length()-1) + "s"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif moudre:
+			participle = participle.substr(0, participle.length()-1) + "lu"
+			stem = stem.substr(0, stem.length()-1) + "l"
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif vivre:
+			participle = vivre.get_string(1) + "vécu"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif suivre:
+			participle = participle + "i"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif resoudre:
+			participle = participle.substr(0, participle.length()-2) + "lu"
+			stem = stem.substr(0, stem.length()-2) + "lv"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		elif soudre:
+			participle = participle.substr(0, participle.length()-1) + "s"
+			stem = stem.substr(0, stem.length()-2) + "lv"
+			tuStem = tuStem.substr(0, tuStem.length()-1)
+			nousStem = stem
+			vousStem = stem
+			reimpconj(tuStem, nousStem, vousStem)
+			
+		else:
+			participle = participle + "u"
+			reimpconj(tuStem, nousStem, vousStem)
+			
+	if input.ends_with("er") or input.ends_with("ir") or input.ends_with("re"):
+		regex.compile("(.*)(aller|arriver|descendre|entrer|monter|mourir|naitre|partir|passer|rester|retourner|sortir|tomber|venir)$")
+		var specialHelp = regex.search(input)
+		if specialHelp:
+			help = "étant"
+		conjugate(participle, stem, help)
+		if input.ends_with("er"):
+			erimpconj(tuStem, nousStem, vousStem)
+		regex.compile("(se )(.*)")
+		var refl1 = regex.search(input)
+		regex.compile("(s')(.*)")
+		var refl2 = regex.search(input)
+		if refl1:
+			reflexive1(input, participle, stem)
+		if refl2:
+			reflexive2(input, participle, stem)
+			
+	else:
+		resetEndings()
+
+	if input.length() < 4:
+		resetEndings()
+	
+func conjugate(participle, stem, help):
+	$ParticipePresent.text = stem + "ant"
+	$ParticipePasse.text = participle
+	$GerondifPresent.text = "en " + stem + "ant"
+	$GerondifPasse.text = "en " + help + " " + participle
+	
+func erimpconj(tuStem, nousStem, vousStem):
+	$ImperatifTu.text = tuStem
+	$ImperatifNous.text = nousStem + "ons"
+	$ImperatifVous.text = vousStem + "ez"
+	
+func irimpconj(tuStem, nousStem, vousStem):
+	$ImperatifTu.text = tuStem + "s"
+	$ImperatifNous.text = nousStem + "ons"
+	$ImperatifVous.text = vousStem + "ez"
+	
+func reimpconj(tuStem, nousStem, vousStem):
+	$ImperatifTu.text = tuStem + "s"
+	$ImperatifNous.text = nousStem + "ons"
+	$ImperatifVous.text = vousStem + "ez"
+	
+func reflexive1(input, participle, stem):
+	var tu = $ImperatifTu.text
+	var nous = $ImperatifNous.text
+	var vous = $ImperatifVous.text
+	$ParticipePresent.text = stem + "ant"
+	$ParticipePasse.text = participle.substr(3, participle.length())
+	$GerondifPresent.text = "en " + stem + "ant"
+	$GerondifPasse.text = "en s'étant " + participle.substr(3, participle.length())
+	$ImperatifTu.text = tu.substr(3, tu.length()) + "-toi"
+	$ImperatifNous.text = nous.substr(3, nous.length()) + "-nous"
+	$ImperatifVous.text = vous.substr(3, vous.length()) + "-vous"
+	
+func reflexive2(input, participle, stem):
+	pass
+	
+func resetEndings():
+	$ParticipePresent.text = "-"
+	$ParticipePasse.text = "-"
+	$GerondifPresent.text = "-"
+	$GerondifPasse.text = "-"
+	$ImperatifTu.text = "-"
+	$ImperatifNous.text = "-"
+	$ImperatifVous.text = "-"
+	$SpecialLabel.hide()

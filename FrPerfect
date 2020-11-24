@@ -1,6 +1,5 @@
 extends Node
 
-
 # Declare member variables here.
 var avoir = ["ai", "as", "a", "avons", "avez", "ont"]
 var etre = ["suis", "es", "est", "sommes", "êtes", "sont"]
@@ -46,7 +45,7 @@ func _on_Input_text_changed():
 	elif input.ends_with("er"):
 		participle = participle + "é"
 		
-	elif input.ends_with("ir"):
+	elif input.ends_with("ir") or input.ends_with("ïr"):
 		regex.compile("(.*)(devoir)$") #du circum
 		var devoir = regex.search(input)
 		regex.compile("(.*)(savoir)$") #su
@@ -59,7 +58,7 @@ func _on_Input_text_changed():
 		var pleuvoir = regex.search(input)
 		regex.compile("(.*)(hair|haïr)$") #hai ummlat
 		var hair = regex.search(input)
-		regex.compile("(.*)(en|cour|vetir|vêtir)(ir)$") #ends in u
+		regex.compile("(.*)(en|cour|vet|vêt)(ir)$") #ends in u
 		var enir = regex.search(input)
 		regex.compile("(.*)(querir|quérir)$") #quis
 		var querir = regex.search(input)

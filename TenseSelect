@@ -45,5 +45,9 @@ func _on_Subjonctif_pressed():
 func _on_Subjonctif_Passe_pressed():
 	get_tree().change_scene("res://FrSubjunctivePasse.tscn")
 
+func _on_Autres_pressed():
+	get_tree().change_scene("res://FrAutres.tscn")
+
+
 func _on_Current_text_changed():
 	Global.text = $Current.text

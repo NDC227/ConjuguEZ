@@ -74,17 +74,11 @@ func _on_Input_text_changed():
 		if result and not excep:
 			singStem = input.substr(0, input.length()-2) + result.get_string(3)
 			ilsStem = singStem
-			
-		regex.compile("(.*)(voyer)$")
-		result = regex.search(input)
-		if result:
-			singStem = result.get_string(1) + "voi"
-			ilsStem = singStem
 		
 		endings(singStem, nousStem, vousStem, ilsStem)
 		reflexive(input, regex)
 		
-	elif input.ends_with("ir"):
+	elif input.ends_with("ir") or input.ends_with("ïr"):
 		regex.compile("(.*)(devoir)$") #doive/dev boot
 		var devoir = regex.search(input)
 		regex.compile("(.*)(pouvoir)$") #puiss irr
